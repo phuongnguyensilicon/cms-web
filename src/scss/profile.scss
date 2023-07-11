@@ -1,0 +1,201 @@
+@import 'main';
+
+#profile-update {
+  margin-top: 10px;
+  img {
+    display: unset;
+  }
+
+  .back-header {
+    @apply flex items-center;
+    height: 112px;
+    @media only screen and (max-height: 568px) {
+      height: unset;
+    }
+
+    .back {
+      @apply cursor-pointer font-montserrat font-bold p-6;
+      line-height: 26px;
+      color: rgba(255, 255, 255, 0.5);
+
+      img {
+        @apply px-1 w-[18px];
+      }
+    }
+  }
+
+  .user {
+    @apply flex flex-col text-white mx-3;
+
+    @media only screen and (max-height: 568px) {
+      min-height: calc(100vh - 74px);
+    }
+
+    color: #aeaeae;
+
+    a {
+      @apply text-white no-underline;
+    }
+
+    h1 {
+      @apply font-montserrat font-semibold text-center text-white pt-6;
+    }
+
+    h2 {
+      @apply font-medium font-lato text-center;
+    }
+
+    button {
+      @apply w-full mb-8 p-3 border-0 font-montserrat font-bold text-[18.8609px] leading-[24px] cursor-pointer text-center;
+      background: linear-gradient(180deg, #f11e22 0%, #912a89 100%);
+      box-shadow: 1.32776px 1.32776px 3.98328px rgba(0, 0, 0, 0.25);
+      border-radius: 7.96655px;
+      letter-spacing: 0.146054px;
+      color: rgba(255, 255, 255, 0.8);
+      &.disabled {
+        @apply cursor-not-allowed;
+        background: linear-gradient(180deg, #292929 0%, #1d1d1d 100%);
+        box-shadow: 1.32776px 1.32776px 3.98328px rgba(0, 0, 0, 0.25);
+        border-radius: 7.96655px;
+      }
+    }
+
+    form {
+      @apply px-4 pt-8 font-lato;
+
+      > div {
+        @apply w-full pb-8;
+        &:last-child {
+          @apply pb-0;
+        }
+        &.relative {
+          input {
+            @apply font-lato font-medium text-[16px] leading-5 h-full w-full bg-transparent pt-4 pb-1.5 outline outline-0 transition-all focus:border-gray-500 focus:outline-0 disabled:border-0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            &.success {
+              border-bottom: 1px solid rgba(13, 176, 43, 0.75);
+            }
+            &.error {
+              border-bottom: 1px solid rgba(255, 15, 0, 0.75);
+            }
+          }
+
+          label {
+            @apply pointer-events-none absolute left-0 -top-1.5 flex h-full w-full transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:transition-transform after:duration-300;
+          }
+        }
+      }
+
+      .gender {
+        input[type='radio'] {
+          @apply font-lato font-medium text-[16px] leading-5 mr-2 h-6 w-6 accent-gray-700;
+        }
+        label {
+          @apply text-[16px] leading-5;
+        }
+      }
+    }
+
+    .logo {
+      @apply text-center;
+    }
+  }
+
+  .subscribe {
+    @apply text-white pt-16 mx-3;
+
+    min-height: calc(100vh - 74px);
+
+    @media only screen and (max-height: 568px) {
+      @apply pt-4;
+      min-height: calc(100vh - 74px);
+    }
+
+    color: #aeaeae;
+    border-radius: 50px 50px 0px 0px;
+
+    background: linear-gradient(180deg, #1c1c1c 0%, rgba(28, 28, 28, 0) 100%),
+      linear-gradient(180deg, #2c2c2c 0%, rgba(255, 255, 255, 0) 100%);
+
+    border: 1px solid #3a3a3a;
+    border-bottom: none;
+
+    a {
+      @apply text-white no-underline;
+    }
+
+    h1 {
+      @apply font-montserrat font-semibold text-center text-white pt-6;
+    }
+
+    h2 {
+      @apply font-medium font-lato text-center;
+    }
+
+    button {
+      @apply w-full mb-8 p-[10px] border-0 font-montserrat font-bold text-[15px] leading-[26px] cursor-pointer text-center;
+      box-shadow: 1.32776px 1.32776px 3.98328px rgba(0, 0, 0, 0.25);
+      border-radius: 7.96655px;
+      letter-spacing: 0.146054px;
+      color: rgba(255, 255, 255, 0.8);
+      background: linear-gradient(180deg, #292929 0%, #1d1d1d 100%);
+      &.active {
+        background: linear-gradient(180deg, #f11e22 0%, #912a89 100%);
+      }
+      &.disabled {
+        cursor: not-allowed;
+      }
+    }
+ 
+    .streamers {
+      @apply grid gap-4 grid-cols-2 p-[20px];
+      div {
+        @apply flex justify-center items-center border-2 border-transparent font-montserrat font-bold text-[20px] cursor-pointer;
+        border-radius: 12px;
+        &:last-child {
+          @apply h-full w-full;
+          div {
+            background: #1d1d1d;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: white;
+          }
+        }
+        &.active {
+          border: 2px solid #a31317;
+        }
+      }
+    }
+
+    .buttons {
+      @apply flex flex-row p-[13px];
+      button {
+        @apply m-[10px];
+        &.done {
+          background: linear-gradient(180deg, #f11e22 0%, #912a89 100%);
+          box-shadow: 1.23746px 1.23746px 3.71237px rgba(0, 0, 0, 0.25);
+          &.disabled {
+            background: #525050;
+          }
+        }
+      }
+    }
+
+    .logo {
+      @apply text-center;
+    }
+  }
+
+  .error {
+    @apply font-lato font-medium text-[18px] leading-[22px] not-italic mt-1;
+    color: rgba(255, 15, 0, 0.75);
+    &.center {
+      @apply text-center;
+    }
+  }
+  .success {
+    @apply font-lato font-medium text-[18px] leading-[22px] not-italic mt-1 text-green-700;
+    &.center {
+      @apply text-center;
+    }
+  }
+}

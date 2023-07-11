@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "wmaurer.change-case",
+    "formulahendry.auto-rename-tag",
+    "editorconfig.editorconfig",
+    "wayou.vscode-todo-highlight"
+  ]
+}
