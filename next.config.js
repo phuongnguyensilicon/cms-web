@@ -1,59 +1,56 @@
 /** @type {import('next').NextConfig} */
-const path = require('path');
 const nextConfig = {
+  httpAgentOptions: {
+    keepAlive: false,
+  },
   experimental: {
-    appDir: true
+    appDir: true,
+    serverComponentsExternalPackages: ["mysql2", "prisma", "@prisma/client"]
   },
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'image.tmdb.org',
-        port: '',
-        pathname: '**'
+        protocol: "https",
+        hostname: "image.tmdb.org",
+        port: "",
+        pathname: "**"
       },
       {
-        protocol: 'https',
-        hostname: 'www.themoviedb.org',
-        port: '',
-        pathname: '**'
+        protocol: "https",
+        hostname: "www.themoviedb.org",
+        port: "",
+        pathname: "**"
       },
       {
-        protocol: 'https',
-        hostname: '**.googleusercontent.com'
+        protocol: "https",
+        hostname: "**.cloudfront.net"
       },
       {
-        protocol: 'https',
-        hostname: '**.fbsbx.com'
-      },
-      {
-        protocol: 'https',
-        hostname: '**.fbcdn.net'
-      },
-      {
-        protocol: 'https',
-        hostname: '**.gravatar.com'
-      },
-      {
-        protocol: 'https',
-        hostname: '**.auth0.com'
-      },
-      {
-        protocol: 'https',
-        hostname: '**.cloudfront.net'
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'gvthumbnail.zype.com'
+        protocol: "https",
+        hostname: "bizweb.dktcdn.net"
       }
     ]
   },
-  sassOptions: {
-    includePaths: [path.join(__dirname, 'src/scss')]
+  async headers() {
+    return [
+      {
+        // matching all API routes
+        source: "/(.*)",
+        headers: [
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "*",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value:
+              "*",
+          },
+        ],
+      },
+    ]
   }
 };
 

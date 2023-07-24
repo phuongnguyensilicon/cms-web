@@ -1,0 +1,16 @@
+.title-bg-container {
+  color              : #fff;
+  background-position: top;
+  background-size    : cover;
+  height             : 400px;
+}
+
+.title-wrapper {
+  display         : flex;
+  /* background-image: linear-gradient(to right, rgb(10, 46, 112) calc((50vw - 170px) - 340px), rgba(32, 48, 95, 0.84) 50%, rgba(32, 48, 95, 0.84) 100%); */
+  background-image: linear-gradient(180deg, #c8c8c8 0%, #252525 100%);
+}
+
+.h-25 {
+  height: 25px;
+}

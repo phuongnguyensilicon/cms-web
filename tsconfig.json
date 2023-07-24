@@ -14,31 +14,30 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "@app/*": ["src/app/*"],
-      "@svg/*": ["public/svg/*"],
-      "@scss/*": ["src/scss/*"],
-      "@configs/*": ["src/configs/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@helpers/*": ["src/helpers/*"],
-      "@constants/*": ["src/constants/*"],
-      "@services/*": ["src/services/*"],
-      "@providers/*": ["src/providers/*"],
-      "@interfaces/*": ["src/interfaces/*"],
-      "@components/*": ["src/components/*"],
-      "@images/*": ["public/images/*"]
-    },
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@svg/*": ["public/images/svg/*"],
+      "@scss/*": ["src/scss/*"],
+      "@events/*": ["src/events/*"],
+      "@configs/*": ["src/configs/*"],
+      "@helpers/*": ["src/helpers/*"],
+      "@services/*": ["src/service/*"],
+      "@providers/*": ["src/providers/*"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@components/*": ["src/components/*"],
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     "next-env.d.ts",
-    "public/**/*",
-    "src/**/*",
+    "next-auth.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]

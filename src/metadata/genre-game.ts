@@ -1,0 +1,1 @@
+export const genreGames = ["Fantasy", "Thriller", "Mystery", "Action", "Horror", "Comedy", "Drama"]

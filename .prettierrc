@@ -1,14 +1,13 @@
 {
+  "printWidth": 80,
   "tabWidth": 2,
   "useTabs": false,
   "semi": true,
-  "singleQuote": true,
-  "arrowParens": "avoid",
+  "singleQuote": false,
   "trailingComma": "none",
-  "prettier/prettier": [
-    "error",
-    {
-      "endOfLine": "auto"
-    }
-  ]
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "arrowParens": "avoid",
+  "proseWrap": "preserve",
+  "endOfLine": "lf"
 }

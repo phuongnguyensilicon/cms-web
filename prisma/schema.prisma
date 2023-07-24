@@ -1,0 +1,522 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://clixadmin:S5LSzOb5E0rmxjCLdPbnEPNUbjba6WIJPWJY@clix-db-cluster-prod-instance-1.clskrqkfrxf2.us-east-1.rds.amazonaws.com/clix?connection_limit=3600"
+}
+
+model Provider {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  titles    Title[]
+}
+
+model Title {
+  id           String          @id @default(uuid())
+  name         String
+  tmdbId       Int             @unique
+  providerId   String          @default(uuid())
+  provider     Provider        @relation(fields: [providerId], references: [id])
+  synopsis     String          @db.Text
+  active       Boolean         @default(true)
+  posterPath   String?
+  backdropPath String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  metadata     TitleMetadata[]
+  videos       Video[]
+  tags         Tag[]
+  RelTagTitle  RelTagTitle[]
+
+  @@fulltext([name])
+}
+
+model TitleMetadata {
+  id        String   @id @default(uuid())
+  metaKey   String   @db.Text
+  metaValue String   @db.Text
+  titleId   String   @default(uuid())
+  title     Title    @relation(fields: [titleId], references: [id])
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Video {
+  id        String   @id @default(uuid())
+  name      String
+  value     String   @db.Text
+  titleId   String   @default(uuid())
+  title     Title    @relation(fields: [titleId], references: [id])
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id          String        @id @default(uuid())
+  name        String        @unique
+  titles      Title[]
+  active      Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  RelTagTitle RelTagTitle[]
+}
+
+model RelTagTitle {
+  titleId   String
+  title     Title    @relation(fields: [titleId], references: [id])
+  tagId     String
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([titleId, tagId])
+}
+
+
+model MediaItem {
+  id           String          @id @default(uuid())
+  name         String
+  overview     String?         @db.VarChar(5000)
+  releaseDate  DateTime?
+  customReleaseDate  DateTime?
+  tmdbId       Int             
+  mediaType    String            
+  active       Boolean         @default(true)
+  posterPath   String?         @db.VarChar(1000)
+  backdropPath String?         @db.VarChar(1000)
+  genres       String?         @db.VarChar(2000)
+  tags         String?         @db.VarChar(2000)
+  status       String?         @db.VarChar(100)
+  certification String?       
+  recommendationTmdbIds String? @db.VarChar(2000)
+  voteAverage  Float?
+  voteAveragePercent  String? 
+  runtime      Int?
+  numberEpisodes  Int?
+  numberSeasons Int?
+  originalLanguage         String?
+  tagline         String?
+  budget       Float?
+  revenue       Float?
+  keywords    String?         @db.Text
+  socialInfos    String?         @db.Text
+  productionCountries String?         @db.Text
+  ads3rdUrl     String? @db.VarChar(1000)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+  mediaCreditItems     MediaCreditItem[]
+  mediaAdditionalItems     MediaAdditionalItem[]
+  mediaWatchProviders     MediaWatchProvider[]
+  mediaListNameItems          MediaListNameItem[]
+  mediaReviewItems          MediaReviewItem[]
+  userMediaWatchLists UserMediaWatchList[]
+  userMediaQuestionaires     UserMediaQuestionaire[]
+  userMediaStats  UserMediaStat[]
+  userGenreMediaRoundGames  UserGenreMediaRoundGame[]
+  mediaItemCompareSyncs MediaItemCompareSync[]
+  @@fulltext([name])
+}
+
+model MediaReviewItem {
+  id                  String          @id @default(uuid())
+  author              String          @db.VarChar(500)
+  authorDetails       String          @db.Text
+  content             String          @db.Text
+  url                 String?
+  mediaItemId         String          @default(uuid())
+  mediaItem           MediaItem       @relation(fields: [mediaItemId], references: [id])
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @default(now())
+}
+
+model MediaCreditItem {
+  id                  String          @id @default(uuid())
+  adult               Boolean         @default(true)
+  gender              Int
+  tmdbId              Int             
+  name                String          @db.VarChar(500)
+  knownDepartment     String          @db.VarChar(500)
+  profilePath         String?         @db.VarChar(1000)
+  creditType          String        
+  job                 String?         @db.VarChar(1000)
+  mediaItemId         String          @default(uuid())
+  mediaItem           MediaItem       @relation(fields: [mediaItemId], references: [id])
+  department          String?         @db.VarChar(1000)
+  order               Int? 
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @default(now())
+}
+
+
+model MediaAdditionalItem {
+  id                  String          @id @default(uuid())
+  tmdbId              Int             
+  name                String          @db.VarChar(1000)
+  key                 String          @db.VarChar(500)
+  site                String          @db.VarChar(200)
+  active              Boolean         @default(true)
+  isSelected          Boolean?        @default(false)
+  source              String?
+  mostPopular         Boolean?
+  type                String?
+  thumbnailUrl        String?         @db.VarChar(1000)
+  createdAt           DateTime        @default(now())
+  mediaItemId         String          @default(uuid())
+  mediaItem           MediaItem       @relation(fields: [mediaItemId], references: [id])
+  updatedAt           DateTime        @default(now())
+}
+
+model MediaWatchProvider {
+  id                  String          @id @default(uuid())
+  tmdbId              Int             
+  logoPath            String          @db.VarChar(1000)
+  providerId          Int?         
+  providerName        String          @db.VarChar(200)
+  link                String?         @db.VarChar(1000)
+  isSelected                Boolean?        
+  createdAt           DateTime        @default(now())
+  mediaItemId         String          @default(uuid())
+  mediaItem           MediaItem       @relation(fields: [mediaItemId], references: [id])
+  updatedAt           DateTime        @default(now())
+}
+
+
+model MediaListName {
+  id           String          @id @default(uuid())
+  name         String          @unique
+  description  String?         @db.VarChar(2000)
+  active       Boolean        @default(true)
+  displayOrder            Int? 
+  mediaListNameItems          MediaListNameItem[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+
+model MediaListNameItem {
+  id                      String          @id @default(uuid())
+  mediaListNameId         String          
+  mediaItemId             String
+  displayOrder            Int         
+  mediaListName           MediaListName   @relation(fields: [mediaListNameId], references: [id])
+  mediaItem               MediaItem       @relation(fields: [mediaItemId], references: [id])
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @default(now())
+  @@unique([mediaListNameId, mediaItemId])
+}
+
+model CacheItem {
+  id                      String          @id @default(uuid())
+  key                     String          @unique
+  value                   String          @db.VarChar(65535)
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @default(now())
+}
+
+model Questionaire {
+  id                      String          @id @default(uuid())
+  isWatched               Boolean         @default(true)
+  isLiked                 Boolean         @default(true)
+  active                  Boolean         @default(true)
+  selectScore             Float?
+  rateScore               Float?
+  questions               Question[]
+  userMediaQuestionaires     UserMediaQuestionaire[]
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @default(now())
+}
+
+
+model Question {
+  id                      String          @id @default(uuid())
+  questionaireId          String
+  title                   String          @db.VarChar(500)
+  description             String          @db.VarChar(1000)
+  type                    String          @db.VarChar(100)
+  active                  Boolean         @default(true)
+  point                   Float?      
+  subActions              String?         @db.VarChar(1000)
+  displayOrder            Int 
+  questionOptions         QuestionOption[]
+  questionaire            Questionaire    @relation(fields: [questionaireId], references: [id])
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @default(now())
+}
+
+
+model QuestionOption {
+  id                      String          @id @default(uuid())
+  questionId              String
+  title                   String          @db.VarChar(500)
+  description             String          @db.VarChar(1000)
+  type                    String          @db.VarChar(100)
+  active                  Boolean         @default(true)
+  point                   Float?         
+  displayOrder            Int
+  question                Question        @relation(fields: [questionId], references: [id])
+  userMediaAnswers     UserMediaAnswer[]
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @default(now())
+}
+
+
+model User {
+  id           String          @id @default(uuid())
+  userName     String?         @unique
+  firstName    String?         @db.VarChar(500)
+  lastName     String?         @db.VarChar(500)
+  email        String?         @db.VarChar(100)
+  phone        String?         @db.VarChar(50)
+  picture      String?         @db.VarChar(1000)
+  avatar       String?         @db.VarChar(1000)
+  dob          DateTime?       
+  city         String? 
+  state        String? 
+  gender       String? 
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  userProviders     UserProvider[]
+  userStreamers     UserStreamer[]
+  userMediaWatchLists UserMediaWatchList[]
+  userFeedbacks UserFeedback[]
+  userMediaQuestionaires     UserMediaQuestionaire[]
+  userRoundGames  UserRoundGame[]
+  userMediaStats  UserMediaStat[]
+  userTixs    UserTix[]
+  userScoreStat UserScoreStat?
+}
+
+model UserProvider {
+  id           String          @id @default(uuid())
+  sub          String          @unique
+  userId       String         
+  user         User            @relation(fields: [userId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+
+model UserStreamer {
+  id           String          @id @default(uuid())
+  providerId   Int
+  userId       String         
+  user         User            @relation(fields: [userId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model UserMediaWatchList {
+  id           String          @id @default(uuid())
+  mediaItemId          String         
+  userId       String         
+  user         User            @relation(fields: [userId], references: [id])
+  mediaItem         MediaItem            @relation(fields: [mediaItemId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model UserFeedback {
+  id           String          @id @default(uuid())
+  content      String          @db.VarChar(2000)
+  userId       String         
+  user         User            @relation(fields: [userId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model UserMediaQuestionaire {
+  id           String          @id @default(uuid())
+  mediaItemId  String
+  questionaireId  String
+  userId       String  
+  user         User            @relation(fields: [userId], references: [id])
+  questionaire                Questionaire        @relation(fields: [questionaireId], references: [id])
+  mediaItem                MediaItem        @relation(fields: [mediaItemId], references: [id])
+  userMediaAnswers UserMediaAnswer[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model UserMediaAnswer {
+  id           String          @id @default(uuid())
+  userMediaQuestionaireId  String
+  questionOptionId  String
+  point     Float?
+  questionOption                QuestionOption        @relation(fields: [questionOptionId], references: [id])
+  userMediaQuestionaire                UserMediaQuestionaire        @relation(fields: [userMediaQuestionaireId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model RoundGame {
+  id           String          @id @default(uuid())
+  startDate  DateTime
+  endDate  DateTime
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+  userRoundGames  UserRoundGame[]
+}
+
+model UserRoundGame {
+  id           String          @id @default(uuid())
+  roundGameId  String
+  userId       String 
+  status       String
+  roundGame    RoundGame       @relation(fields: [roundGameId], references: [id])
+  user         User            @relation(fields: [userId], references: [id])
+  userGenreRoundGames  UserGenreRoundGame[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model UserGenreRoundGame {
+  id           String          @id @default(uuid())
+  userRoundGameId  String
+  genre        String 
+  userRoundGame    UserRoundGame       @relation(fields: [userRoundGameId], references: [id])
+  userGenreMediaRoundGames  UserGenreMediaRoundGame[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model UserGenreMediaRoundGame {
+  id           String          @id @default(uuid())
+  userGenreRoundGameId  String
+  mediaItemId        String 
+  status       String
+  displayOrder  Int
+  mediaItem    MediaItem       @relation(fields: [mediaItemId], references: [id])
+  userGenreRoundGame    UserGenreRoundGame       @relation(fields: [userGenreRoundGameId], references: [id])
+  userMediaStats  UserMediaStat[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model UserMediaStat {
+  id           String          @id @default(uuid())
+  userGenreMediaRoundGameId  String?
+  mediaItemId   String
+  userId        String
+  selectScore         Float?  
+  viewAdsScore   Float?  
+  rateScore   Float?  
+  viewGameScore   Float?  
+  likePoints   Float?
+  user   User @relation(fields: [userId], references: [id])
+  mediaItem   MediaItem @relation(fields: [mediaItemId], references: [id])
+  userGenreMediaRoundGame    UserGenreMediaRoundGame?       @relation(fields: [userGenreMediaRoundGameId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model SyncTitleVersion {
+  id           String          @id @default(uuid())
+  key   String  @unique
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+  mediaItemOriginals  MediaItemOriginal[]
+  mediaItemCompareSyncs MediaItemCompareSync[]
+}
+
+model MediaItemOriginal {
+  id           String          @id @default(uuid())
+  name         String
+  overview     String?         @db.VarChar(5000)
+  releaseDate  DateTime?
+  tmdbId       Int             
+  mediaType    String            
+  active       Boolean         @default(true)
+  posterPath   String?         @db.VarChar(1000)
+  backdropPath String?         @db.VarChar(1000)
+  genres       String?         @db.VarChar(2000)
+  tags         String?         @db.VarChar(2000)
+  status       String?         @db.VarChar(100)
+  certification String?       
+  voteAverage  Float?
+  runtime      Int?
+  numberEpisodes  Int?
+  numberSeasons Int?
+  originalLanguage         String?
+  tagline         String?
+  budget       Float?
+  revenue       Float?
+  keywords    String?         @db.Text
+  socialInfos    String?         @db.Text
+  productionCountries String?         @db.Text
+  credits String?         @db.Text
+  videos String?         @db.Text
+  watchs String?         @db.Text
+  ads3rdUrl     String? @db.VarChar(1000)
+  syncTitleVersionId  String
+  syncTitleVersion   SyncTitleVersion @relation(fields: [syncTitleVersionId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+  @@fulltext([name])
+}
+
+
+model MediaItemCompareSync {
+  id           String          @id @default(uuid())
+  mediaItemId         String
+  diffChanges     String         @db.Text
+  syncTitleVersionId  String
+  mediaItem   MediaItem @relation(fields: [mediaItemId], references: [id])
+  syncTitleVersion   SyncTitleVersion @relation(fields: [syncTitleVersionId], references: [id])
+  isRead    Boolean?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+
+model Contest {
+  id           String          @id @default(uuid())
+  prizeValue  Float?
+  status      String?
+  startDate  DateTime
+  endDate  DateTime
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+  userTixs  UserTix[]
+  contestWonStats ContestWonStat[]
+}
+
+model ContestWonStat {
+  id           String          @id @default(uuid())
+  contestId   String
+  userTixId      String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+  contest   Contest @relation(fields: [contestId], references: [id])
+  userTix UserTix @relation(fields: [userTixId], references: [id])
+}
+
+model UserTix {
+  id           String          @id @default(uuid())
+  numberCode  String
+  userId      String
+  val  Float?
+  contestId     String
+  user   User @relation(fields: [userId], references: [id])
+  contest   Contest @relation(fields: [contestId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+  contestWonStats ContestWonStat[]
+}
+
+model UserScoreStat {
+  id           String          @id @default(uuid())
+  totalPoint  Float?
+  totalUsedPoint      Float?
+  userId      String @unique
+  user   User @relation(fields: [userId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+}
+

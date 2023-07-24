@@ -1,56 +1,49 @@
-/* eslint-disable */
-import { getEnv } from '@configs/env';
-import { UserService } from '@services/user';
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import NextAuth, { NextAuthOptions } from "node_modules/next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/login"
+  },
+  session: {
+    strategy: "jwt"
+  },
   providers: [
     CredentialsProvider({
-      id: 'sign-auth0',
-      name: 'Credentials',
+      id: process.env.NEXT_PUBLIC_CREDENTIAL_ID,
       credentials: {
-        sms: {},
-        email: {},
-        code: {}
+        email: {
+          label: "Email",
+          type: "text"
+        },
+        password: {
+          label: "Password",
+          type: "password"
+        }
       },
-      async authorize(credentials) {
-        const { email, sms, code } = credentials as any;
-        if (email && code) {
-          const { data } = await UserService.verify({ email, code });
-          return data ?? null;
-        } else if (sms && code) {
-          const { data } = await UserService.verify({ sms, code });
-          return data ?? null;
-        } else if (code) {
-          const { data } = await UserService.token({ code });
-          return data ?? null;
+      async authorize(credentials, req) {
+        if (
+          credentials?.email === process.env.NEXT_PUBLIC_EMAIL &&
+          credentials?.password === process.env.NEXT_PUBLIC_PASSWORD
+        ) {
+          return {
+            id: "ff3a135c-022c-4d61-a0aa-e459a067eab1",
+            name: "Admin",
+            email: credentials?.email
+          };
         } else {
-          return null;
+          throw new Error("Incorrect username and password");
         }
       }
     })
   ],
-  secret: getEnv('NEXTAUTH_SECRET'),
-  session: {
-    strategy: 'jwt'
-  },
-  pages: {
-    signIn: '/auth/login'
-  },
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
-      if (trigger === 'update') {
-        return { ...token, ...session.user };
-      }
-      return { ...token, ...user };
-    },
-    async session({ session, token, user }) {
-      session.user = { ...user, ...token };
-      return session;
+    async jwt({ token }) {
+      token.userRole = "admin";
+      return token;
     }
-  },
-  events: {},
-  // Enable debug messages in the console if you are having problems
-  debug: getEnv('NODE_ENV') === 'development'
-});
+  }
+};
+
+export default NextAuth(authOptions);
